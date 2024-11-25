@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Chat App</title>
     <style>
+        /* Base styles */
         body {
             font-family: Arial, sans-serif;
             margin: 0;
@@ -54,13 +55,13 @@
             line-height: 1.4;
         }
         .message.sent {
-            background: #dcf8c6;
-            align-self: flex-end;
-        }
-        .message.received {
-            background: #fff;
-            align-self: flex-start;
-        }
+        background: #ffccea;
+        align-self: flex-end;
+      }
+      .message.received {
+        background: #cdc1ff;
+        align-self: flex-start;
+      }
         .username {
             font-weight: bold;
             margin-bottom: 5px;
@@ -71,61 +72,67 @@
             margin-top: 5px;
             text-align: right;
         }
+        #searchInput {
+            padding: 10px;
+            font-size: 16px;
+            width: 100%;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            margin-bottom: 10px;
+        }
+
+        /* Mobile Responsive Styles */
+        @media (max-width: 768px) {
+            body {
+                font-size: 14px;
+            }
+            #messages {
+                padding: 5px;
+            }
+            .message {
+                font-size: 12px;
+                max-width: 80%;
+            }
+            form {
+                padding: 5px;
+            }
+            input, button {
+                font-size: 14px;
+            }
+            #searchInput {
+                font-size: 14px;
+                padding: 8px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            body {
+                font-size: 12px;
+            }
+            .message {
+                font-size: 12px;
+                max-width: 90%;
+            }
+            input, button {
+                font-size: 14px;
+                padding: 8px;
+            }
+        }
     </style>
 </head>
 <body>
+    <div style="padding: 10px; background-color: #f1f1f1; border-bottom: 1px solid #ccc;">
+        <input id="searchInput" type="text" placeholder="Search messages..." />
+    </div>
+
     <div id="messages"></div>
+
     <form id="form">
         <input id="input" autocomplete="off" placeholder="Type a message..." />
         <button type="submit">Send</button>
     </form>
 
     <script src="/socket.io/socket.io.js"></script>
-    <script>
-        const socket = io();
-
-        const form = document.getElementById('form');
-        const input = document.getElementById('input');
-        const messages = document.getElementById('messages');
-
-        // Prompt the user for a username
-        const username = prompt('Enter your name:') || 'Anonymous';
-
-        form.addEventListener('submit', (e) => {
-            e.preventDefault();
-            if (input.value) {
-                const message = {
-                    user: username,
-                    text: input.value,
-                    time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
-                };
-                socket.emit('chat message', message);
-                input.value = '';
-            }
-        });
-
-        socket.on('chat message', (msg) => {
-            const messageDiv = document.createElement('div');
-            messageDiv.classList.add('message');
-            messageDiv.classList.add(msg.user === username ? 'sent' : 'received');
-
-            const usernameDiv = document.createElement('div');
-            usernameDiv.textContent = msg.user;
-            usernameDiv.classList.add('username');
-            messageDiv.appendChild(usernameDiv);
-
-            const textDiv = document.createElement('div');
-            textDiv.textContent = msg.text;
-            messageDiv.appendChild(textDiv);
-
-            const timestampDiv = document.createElement('div');
-            timestampDiv.textContent = msg.time;
-            timestampDiv.classList.add('timestamp');
-            messageDiv.appendChild(timestampDiv);
-
-            messages.appendChild(messageDiv);
-            messages.scrollTop = messages.scrollHeight; // Auto-scroll
-        });
-    </script>
+    <script src="script.js"></script>
 </body>
 </html>
